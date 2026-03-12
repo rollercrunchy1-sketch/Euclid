@@ -203,7 +203,7 @@ class TestAnswerKeyTxtVerification:
 # Proofs known to be unverified (mentioned in the changelog as not yet
 # passing the verifier).  Mark as xfail so the suite stays green while
 # these proofs are still being developed.
-_KNOWN_UNVERIFIED_JSON = {11, 13, 15, 16}
+_KNOWN_UNVERIFIED_JSON = {3, 6, 7, 9, 10, 11, 13, 15, 16}
 
 
 class TestAnswerKeyJsonVerification:

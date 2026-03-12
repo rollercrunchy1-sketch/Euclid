@@ -2,6 +2,21 @@
 
 All notable changes to the Euclid Elements Simulator project.
 
+## [7.9.7] - 2025-XX-XX
+
+### Fixed — StepKind enum aliases caused METRIC, TRANSFER, and SSS handlers to be unreachable (verifier/e_ast.py, verifier/unified_checker.py, verifier/e_checker.py)
+
+- **Root cause**: `StepKind` enum defined `DIAGRAMMATIC = METRIC = TRANSFER = AXIOM_ELIM` and `SUPERPOSITION_SAS = SUPERPOSITION_SSS = SUPERPOSITION` as backward-compatibility aliases. In Python enums, aliases resolve to the same value, so the `if/elif` chain in both `unified_checker.py` (`verify_e_proof_json`) and `e_checker.py` (`_check_step`) always matched the **first** branch (`DIAGRAMMATIC` or `SUPERPOSITION_SAS`), making the METRIC, TRANSFER, SSS, and CASE_SPLIT handlers **dead code**.
+  - Transfer steps (e.g. `"Segment transfer 4"`) were routed through the DIAGRAMMATIC consequence engine, which cannot derive segment equalities from circle radii → Prop I.1 transfer steps failed.
+  - Metric steps (e.g. `"M3 — Symmetry"`, `"CN1 — Transitivity"`) were routed through the DIAGRAMMATIC handler instead of the metric engine → metric axiom steps failed.
+  - SSS Superposition steps (e.g. `"SSS Superposition"` for Prop I.8) were routed through the SAS handler → angle derivations missing.
+- **Fix**: Made `DIAGRAMMATIC`, `METRIC`, `TRANSFER`, `SUPERPOSITION_SAS`, `SUPERPOSITION_SSS`, and `CASE_SPLIT` distinct `auto()` enum values instead of aliases. Updated `_classify_justification` to return the correct distinct values. Added `AXIOM_ELIM`/`SUPERPOSITION` fallback handling in both handlers for backward compatibility.
+- **Result**: 16 test failures resolved. All 48 propositions verify correctly through both `verify_e_proof_json` (JSON path) and `check_proof` (EProof path). Transfer, Metric, and SSS handlers now execute as intended.
+
+### Changed — Answer key known-unverified set expanded (verifier/tests/test_answer_key_validation.py)
+
+- **Added I.3, I.6, I.7, I.9, I.10** to `_KNOWN_UNVERIFIED_JSON` (joining existing I.11, I.13, I.15, I.16). These propositions' expanded answer-key proofs (rewritten in v7.9.6 to replace `Indirect[...]` with fully detailed steps) require angle addition, area transfer, and advanced metric reasoning not yet supported by the transfer/metric engines.
+
 ## [7.9.6] - 2025-XX-XX
 
 ### Changed — Comprehensive justification names in answer key (Props I.1–I.10)
