@@ -389,29 +389,33 @@ class StepKind(Enum):
     """The type of a proof step in System E.
 
     Naming follows an intro/elim convention where possible:
-    - CONSTRUCTION = object introduction (let-line, let-circle, …)
-    - AXIOM_ELIM   = derive facts from diag/metric/transfer axiom schemas
-    - SUPERPOSITION= SAS/SSS superposition elimination
-    - THEOREM_APP  = apply a previously proved proposition
-    - INDIRECT     = reductio citing earlier props (legacy wrapper)
-    - BOT_INTRO    = ⊥-intro: derive ⊥ from ψ and ¬ψ
-    - BOT_ELIM     = ⊥-elim: discharge Assume subproof via ⊥
+    - CONSTRUCTION     = object introduction (let-line, let-circle, …)
+    - AXIOM_ELIM       = generic axiom elimination (legacy catch-all)
+    - DIAGRAMMATIC     = derive from diagrammatic axiom schemas (§3.4)
+    - METRIC           = derive from metric axiom schemas (§3.5)
+    - TRANSFER         = derive from transfer axiom schemas (§3.6)
+    - SUPERPOSITION_SAS= SAS superposition elimination (§3.7)
+    - SUPERPOSITION_SSS= SSS superposition elimination (§3.7)
+    - THEOREM_APP      = apply a previously proved proposition
+    - INDIRECT         = reductio citing earlier props (legacy wrapper)
+    - BOT_INTRO        = ⊥-intro: derive ⊥ from ψ and ¬ψ
+    - BOT_ELIM         = ⊥-elim: discharge Assume subproof via ⊥
     """
     CONSTRUCTION = auto()      # introduces new objects
-    AXIOM_ELIM = auto()        # derive from axiom schemas (diag/metric/transfer)
-    SUPERPOSITION = auto()     # SAS or SSS superposition
+    AXIOM_ELIM = auto()        # generic axiom elimination (legacy)
+    DIAGRAMMATIC = auto()      # diagrammatic axiom schemas (§3.4)
+    METRIC = auto()            # metric axiom schemas (§3.5)
+    TRANSFER = auto()          # transfer axiom schemas (§3.6)
+    SUPERPOSITION = auto()     # SAS or SSS superposition (generic)
+    SUPERPOSITION_SAS = auto() # SAS superposition (§3.7)
+    SUPERPOSITION_SSS = auto() # SSS superposition (§3.7)
     THEOREM_APP = auto()       # applies a previously proved theorem
     INDIRECT = auto()          # reductio ad absurdum citing earlier props
     BOT_INTRO = auto()         # ⊥-intro: derive ⊥ from ψ and ¬ψ
     BOT_ELIM = auto()          # ⊥-elim: discharge Assume via ⊥
+    CASE_SPLIT = auto()        # proof by cases
 
     # ── Backward-compatibility aliases ──────────────────────────────
-    DIAGRAMMATIC = AXIOM_ELIM
-    METRIC = AXIOM_ELIM
-    TRANSFER = AXIOM_ELIM
-    SUPERPOSITION_SAS = SUPERPOSITION
-    SUPERPOSITION_SSS = SUPERPOSITION
-    CASE_SPLIT = AXIOM_ELIM    # unused; alias prevents import errors
     REDUCTIO = BOT_ELIM
     CONTRADICTION = BOT_INTRO
 

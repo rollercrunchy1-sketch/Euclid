@@ -122,13 +122,13 @@ class EChecker:
 
         if step.kind == StepKind.CONSTRUCTION:
             self._check_construction(step, result)
-        elif step.kind == StepKind.DIAGRAMMATIC:
+        elif step.kind in (StepKind.DIAGRAMMATIC, StepKind.AXIOM_ELIM):
             self._check_diagrammatic(step, result)
         elif step.kind == StepKind.METRIC:
             self._check_metric(step, result)
         elif step.kind == StepKind.TRANSFER:
             self._check_transfer(step, result)
-        elif step.kind == StepKind.SUPERPOSITION_SAS:
+        elif step.kind in (StepKind.SUPERPOSITION_SAS, StepKind.SUPERPOSITION):
             self._check_sas(step, result)
         elif step.kind == StepKind.SUPERPOSITION_SSS:
             self._check_sss(step, result)
