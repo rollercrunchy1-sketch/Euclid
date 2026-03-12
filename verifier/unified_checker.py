@@ -433,7 +433,7 @@ def verify_e_proof_json(proof_json: dict) -> PanelCheckResult:
                             if vname not in checker.variables:
                                 checker.variables[vname] = _infer_sort(
                                     vname, sort_ctx)
-        elif step_kind == StepKind.DIAGRAMMATIC:
+        elif step_kind in (StepKind.DIAGRAMMATIC, StepKind.AXIOM_ELIM):
             # Named axiom rules (e.g. "Intersection 9", "Generality 3")
             # must cite the specific lines providing their prerequisites.
             # When a named axiom step has explicit refs, restrict the
@@ -538,7 +538,7 @@ def verify_e_proof_json(proof_json: dict) -> PanelCheckResult:
                     lr.valid = False
                     lr.errors.append(
                         f"Transfer assertion {lit} is not derivable.")
-        elif step_kind == StepKind.SUPERPOSITION_SAS:
+        elif step_kind in (StepKind.SUPERPOSITION_SAS, StepKind.SUPERPOSITION):
             # SAS superposition (§3.7): extract 6 point names from the
             # step literals and delegate to apply_sas_superposition.
             pts = _extract_superposition_points(step_lits)
@@ -985,20 +985,20 @@ def _classify_justification(just: str) -> Optional[StepKind]:
 
     # Explicit step kind labels
     _MAP = {
-        "diagrammatic": StepKind.AXIOM_ELIM,
-        "Diagrammatic": StepKind.AXIOM_ELIM,
-        "metric": StepKind.AXIOM_ELIM,
-        "Metric": StepKind.AXIOM_ELIM,
-        "transfer": StepKind.AXIOM_ELIM,
-        "Transfer": StepKind.AXIOM_ELIM,
-        "SAS": StepKind.SUPERPOSITION,
-        "SSS": StepKind.SUPERPOSITION,
-        "SAS Superposition": StepKind.SUPERPOSITION,
-        "SSS Superposition": StepKind.SUPERPOSITION,
-        "SAS-elim": StepKind.SUPERPOSITION,
-        "SSS-elim": StepKind.SUPERPOSITION,
-        "Reit": StepKind.AXIOM_ELIM,
-        "Given": StepKind.AXIOM_ELIM,
+        "diagrammatic": StepKind.DIAGRAMMATIC,
+        "Diagrammatic": StepKind.DIAGRAMMATIC,
+        "metric": StepKind.METRIC,
+        "Metric": StepKind.METRIC,
+        "transfer": StepKind.TRANSFER,
+        "Transfer": StepKind.TRANSFER,
+        "SAS": StepKind.SUPERPOSITION_SAS,
+        "SSS": StepKind.SUPERPOSITION_SSS,
+        "SAS Superposition": StepKind.SUPERPOSITION_SAS,
+        "SSS Superposition": StepKind.SUPERPOSITION_SSS,
+        "SAS-elim": StepKind.SUPERPOSITION_SAS,
+        "SSS-elim": StepKind.SUPERPOSITION_SSS,
+        "Reit": StepKind.DIAGRAMMATIC,
+        "Given": StepKind.DIAGRAMMATIC,
     }
     kind = _MAP.get(just)
     if kind is not None:
